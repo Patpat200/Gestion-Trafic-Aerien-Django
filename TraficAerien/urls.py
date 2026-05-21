@@ -27,4 +27,18 @@ urlpatterns = [
     path('vols/ajouter/', views.vol_creer, name='vol_creer'),
     path('vols/modifier/<int:pk>/', views.vol_modifier, name='vol_modifier'),
     path('vols/supprimer/<int:pk>/', views.vol_supprimer, name='vol_supprimer'),
+
+
+    # Compagnies
+    path('compagnies/', views.compagnie_liste, name='compagnie_liste'),
+    path('compagnies/ajouter/', views.compagnie_creer, name='compagnie_creer'),
+    path('compagnies/modifier/<int:pk>/', views.compagnie_modifier, name='compagnie_modifier'),
+    path('compagnies/supprimer/<int:pk>/', views.compagnie_supprimer, name='compagnie_supprimer'),
+
+    # Types d'avions
+    path('typesavions/', views.typeavion_liste, name='typeavion_liste'),
+    path('typesavions/ajouter/', views.typeavion_creer, name='typeavion_creer'),
+    path('typesavions/modifier/<int:pk>/', views.typeavion_modifier, name='typeavion_modifier'),
+    path('typesavions/supprimer/<int:pk>/', views.typeavion_supprimer, name='typeavion_supprimer'),
+
 ]

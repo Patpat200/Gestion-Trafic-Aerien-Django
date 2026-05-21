@@ -160,3 +160,85 @@ def vol_supprimer(request, pk):
     return render(request, 'TraficAerien/confirmer_suppression.html', {
         'objet': vol, 'titre': 'Supprimer un vol'
     })
+
+
+
+
+
+# ───── COMPAGNIES ─────
+def compagnie_liste(request):
+    compagnies = Compagnie.objects.all()
+    return render(request, 'TraficAerien/compagnie_liste.html', {'compagnies': compagnies})
+
+def compagnie_creer(request):
+    if request.method == 'POST':
+        form = CompagnieForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('compagnie_liste')
+    else:
+        form = CompagnieForm()
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Ajouter une compagnie'
+    })
+
+def compagnie_modifier(request, pk):
+    compagnie = get_object_or_404(Compagnie, pk=pk)
+    if request.method == 'POST':
+        form = CompagnieForm(request.POST, instance=compagnie)
+        if form.is_valid():
+            form.save()
+            return redirect('compagnie_liste')
+    else:
+        form = CompagnieForm(instance=compagnie)
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Modifier une compagnie'
+    })
+
+def compagnie_supprimer(request, pk):
+    compagnie = get_object_or_404(Compagnie, pk=pk)
+    if request.method == 'POST':
+        compagnie.delete()
+        return redirect('compagnie_liste')
+    return render(request, 'TraficAerien/confirmer_suppression.html', {
+        'objet': compagnie, 'titre': 'Supprimer une compagnie'
+    })
+
+# ───── TYPES D'AVIONS ─────
+def typeavion_liste(request):
+    types = TypeAvion.objects.all()
+    return render(request, 'TraficAerien/typeavion_liste.html', {'types': types})
+
+def typeavion_creer(request):
+    if request.method == 'POST':
+        form = TypeAvionForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('typeavion_liste')
+    else:
+        form = TypeAvionForm()
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Ajouter un type d\'avion'
+    })
+
+def typeavion_modifier(request, pk):
+    type_avion = get_object_or_404(TypeAvion, pk=pk)
+    if request.method == 'POST':
+        form = TypeAvionForm(request.POST, request.FILES, instance=type_avion)
+        if form.is_valid():
+            form.save()
+            return redirect('typeavion_liste')
+    else:
+        form = TypeAvionForm(instance=type_avion)
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Modifier un type d\'avion'
+    })
+
+def typeavion_supprimer(request, pk):
+    type_avion = get_object_or_404(TypeAvion, pk=pk)
+    if request.method == 'POST':
+        type_avion.delete()
+        return redirect('typeavion_liste')
+    return render(request, 'TraficAerien/confirmer_suppression.html', {
+        'objet': type_avion, 'titre': 'Supprimer un type d\'avion'
+    })
