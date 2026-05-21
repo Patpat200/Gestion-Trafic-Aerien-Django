@@ -1,6 +1,162 @@
-from django.shortcuts import render
-
-# Create your views here.
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Aeroport, Piste, Compagnie, TypeAvion, Avion, Vol
+from .forms import AeroportForm, PisteForm, CompagnieForm, TypeAvionForm, AvionForm, VolForm
 
 def index(request):
     return render(request, 'TraficAerien/index.html')
+
+# ───── AÉROPORTS ─────
+def aeroport_liste(request):
+    aeroports = Aeroport.objects.all()
+    return render(request, 'TraficAerien/aeroport_liste.html', {'aeroports': aeroports})
+
+def aeroport_creer(request):
+    if request.method == 'POST':
+        form = AeroportForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('aeroport_liste')
+    else:
+        form = AeroportForm()
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Ajouter un aéroport'
+    })
+
+def aeroport_modifier(request, pk):
+    aeroport = get_object_or_404(Aeroport, pk=pk)
+    if request.method == 'POST':
+        form = AeroportForm(request.POST, instance=aeroport)
+        if form.is_valid():
+            form.save()
+            return redirect('aeroport_liste')
+    else:
+        form = AeroportForm(instance=aeroport)
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Modifier un aéroport'
+    })
+
+def aeroport_supprimer(request, pk):
+    aeroport = get_object_or_404(Aeroport, pk=pk)
+    if request.method == 'POST':
+        aeroport.delete()
+        return redirect('aeroport_liste')
+    return render(request, 'TraficAerien/confirmer_suppression.html', {
+        'objet': aeroport, 'titre': 'Supprimer un aéroport'
+    })
+
+# ───── PISTES ─────
+def piste_liste(request):
+    pistes = Piste.objects.all()
+    return render(request, 'TraficAerien/piste_liste.html', {'pistes': pistes})
+
+def piste_creer(request):
+    if request.method == 'POST':
+        form = PisteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('piste_liste')
+    else:
+        form = PisteForm()
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Ajouter une piste'
+    })
+
+def piste_modifier(request, pk):
+    piste = get_object_or_404(Piste, pk=pk)
+    if request.method == 'POST':
+        form = PisteForm(request.POST, instance=piste)
+        if form.is_valid():
+            form.save()
+            return redirect('piste_liste')
+    else:
+        form = PisteForm(instance=piste)
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Modifier une piste'
+    })
+
+def piste_supprimer(request, pk):
+    piste = get_object_or_404(Piste, pk=pk)
+    if request.method == 'POST':
+        piste.delete()
+        return redirect('piste_liste')
+    return render(request, 'TraficAerien/confirmer_suppression.html', {
+        'objet': piste, 'titre': 'Supprimer une piste'
+    })
+
+# ───── AVIONS ─────
+def avion_liste(request):
+    avions = Avion.objects.all()
+    return render(request, 'TraficAerien/avion_liste.html', {'avions': avions})
+
+def avion_creer(request):
+    if request.method == 'POST':
+        form = AvionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('avion_liste')
+    else:
+        form = AvionForm()
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Ajouter un avion'
+    })
+
+def avion_modifier(request, pk):
+    avion = get_object_or_404(Avion, pk=pk)
+    if request.method == 'POST':
+        form = AvionForm(request.POST, instance=avion)
+        if form.is_valid():
+            form.save()
+            return redirect('avion_liste')
+    else:
+        form = AvionForm(instance=avion)
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Modifier un avion'
+    })
+
+def avion_supprimer(request, pk):
+    avion = get_object_or_404(Avion, pk=pk)
+    if request.method == 'POST':
+        avion.delete()
+        return redirect('avion_liste')
+    return render(request, 'TraficAerien/confirmer_suppression.html', {
+        'objet': avion, 'titre': 'Supprimer un avion'
+    })
+
+# ───── VOLS ─────
+def vol_liste(request):
+    vols = Vol.objects.all()
+    return render(request, 'TraficAerien/vol_liste.html', {'vols': vols})
+
+def vol_creer(request):
+    if request.method == 'POST':
+        form = VolForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('vol_liste')
+    else:
+        form = VolForm()
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Ajouter un vol'
+    })
+
+def vol_modifier(request, pk):
+    vol = get_object_or_404(Vol, pk=pk)
+    if request.method == 'POST':
+        form = VolForm(request.POST, instance=vol)
+        if form.is_valid():
+            form.save()
+            return redirect('vol_liste')
+    else:
+        form = VolForm(instance=vol)
+    return render(request, 'TraficAerien/formulaire.html', {
+        'form': form, 'titre': 'Modifier un vol'
+    })
+
+def vol_supprimer(request, pk):
+    vol = get_object_or_404(Vol, pk=pk)
+    if request.method == 'POST':
+        vol.delete()
+        return redirect('vol_liste')
+    return render(request, 'TraficAerien/confirmer_suppression.html', {
+        'objet': vol, 'titre': 'Supprimer un vol'
+    })
