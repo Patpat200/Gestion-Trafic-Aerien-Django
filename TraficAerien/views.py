@@ -1,3 +1,4 @@
+import csv, io
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Aeroport, Piste, Compagnie, TypeAvion, Avion, Vol
 from .forms import AeroportForm, PisteForm, CompagnieForm, TypeAvionForm, AvionForm, VolForm
@@ -320,3 +321,10 @@ def typeavion_supprimer(request, pk):
     return render(request, 'TraficAerien/confirmer_suppression.html', {
         'objet': type_avion, 'titre': 'Supprimer un type d\'avion'
     })
+
+def import_vols_csv(request):
+    return render(request, 'TraficAerien/import_vols.html', {})
+
+def fiche_vols(request):
+    aeroports = Aeroport.objects.all()
+    return render(request, 'TraficAerien/fiche_vols.html', {'aeroports': aeroports, 'vols': None})
