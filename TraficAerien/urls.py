@@ -41,4 +41,8 @@ urlpatterns = [
     path('typesavions/modifier/<int:pk>/', views.typeavion_modifier, name='typeavion_modifier'),
     path('typesavions/supprimer/<int:pk>/', views.typeavion_supprimer, name='typeavion_supprimer'),
 
+
+    # Vols
+    path('vols/import/', views.import_vols_csv, name='import_vols_csv'),
+    path('vols/fiches/', views.fiche_vols, name='fiche_vols'),
 ]
