@@ -1,3 +1,78 @@
 {% extends 'TraficAerien/base.html' %}
-{% block title %}Fiches vols{% endblock %}
-{% block content %}<h3>Fiches de vols — en cours</h3>{% endblock %}
+{% block title %}Fiches de vols{% endblock %}
+{% block content %}
+<style>
+@media print {
+  .sidebar, .navbar, .btn, .no-print { display: none !important; }
+  .card { box-shadow: none !important; border: 1px solid #ccc !important; }
+}
+</style>
+<div class="d-flex justify-content-between align-items-center mb-4 no-print">
+  <h3><i class="bi bi-file-earmark-text"></i> Fiches de vols</h3>
+  {% if vols is not None %}
+  <button onclick="window.print()" class="btn btn-success">
+    <i class="bi bi-printer"></i> Imprimer
+  </button>
+  {% endif %}
+</div>
+<div class="card p-4 mb-4 no-print">
+  <form method="get" class="row g-3 align-items-end">
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Aéroport</label>
+      <select name="aeroport_id" class="form-select" required>
+        <option value="">— Choisir —</option>
+        {% for a in aeroports %}
+        <option value="{{ a.pk }}" {% if aeroport_sel and aeroport_sel.pk == a.pk %}selected{% endif %}>{{ a.nom }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label fw-bold">Date</label>
+      <input type="date" name="date" value="{{ date_sel }}" class="form-control" required>
+    </div>
+    <div class="col-md-3">
+      <label class="form-label fw-bold">Sens</label>
+      <select name="sens" class="form-select">
+        <option value="depart" {% if sens == 'depart' %}selected{% endif %}>Départs</option>
+        <option value="arrivee" {% if sens == 'arrivee' %}selected{% endif %}>Arrivées</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">
+        <i class="bi bi-search"></i> Filtrer
+      </button>
+    </div>
+  </form>
+</div>
+{% if vols is not None %}
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <strong>{{ sens|capfirst }}s — {{ aeroport_sel.nom }} — {{ date_sel }}</strong>
+    <span class="badge bg-secondary">{{ vols|length }} vol(s)</span>
+  </div>
+  <table class="table table-hover mb-0">
+    <thead class="table-dark">
+      <tr>
+        <th>N° Vol</th><th>Avion</th><th>Pilote</th>
+        <th>Départ</th><th>Heure départ</th>
+        <th>Arrivée</th><th>Heure arrivée</th><th>Piste</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for v in vols %}
+      <tr>
+        <td>{{ v.id }}</td><td>{{ v.avion }}</td><td>{{ v.pilote }}</td>
+        <td>{{ v.aeroport_depart }}</td>
+        <td>{{ v.date_heure_depart|date:"H:i" }}</td>
+        <td>{{ v.aeroport_arrivee }}</td>
+        <td>{{ v.date_heure_arrivee|date:"H:i" }}</td>
+        <td>{% if v.piste_arrivee %}{{ v.piste_arrivee.numero }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="text-center text-muted">Aucun vol pour ces critères</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,3 +1,48 @@
 {% extends 'TraficAerien/base.html' %}
 {% block title %}Import CSV{% endblock %}
-{% block content %}<h3>Import CSV — en cours</h3>{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-7">
+    <div class="card p-4 mb-4">
+      <h3><i class="bi bi-upload"></i> Import de vols par fichier CSV</h3>
+      <div class="alert alert-info mt-3">
+        <strong>Format attendu :</strong><br>
+        Séparateur : virgule — Encodage : UTF-8 — 1ère ligne = en-têtes<br><br>
+        <code>avion,pilote,aeroport_depart,date_heure_depart,aeroport_arrivee,date_heure_arrivee</code><br>
+        <code>F-GKXA,Jean Dupont,Charles de Gaulle,2026-06-01 08:00,Lyon Saint-Exupéry,2026-06-01 09:15</code><br><br>
+        <small>
+          — <strong>avion</strong> : nom exact tel qu'il apparaît dans la liste des avions<br>
+          — <strong>aeroport_depart / aeroport_arrivee</strong> : nom exact de l'aéroport<br>
+          — <strong>date_heure</strong> : format YYYY-MM-DD HH:MM
+        </small>
+      </div>
+      {% if not termine %}
+      <form method="post" enctype="multipart/form-data" class="mt-3">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label fw-bold">Fichier CSV</label>
+          <input type="file" name="fichier_csv" accept=".csv" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">
+          <i class="bi bi-upload"></i> Importer
+        </button>
+      </form>
+      {% endif %}
+      {% if termine %}
+      <div class="alert alert-success mt-3">
+        <i class="bi bi-check-circle-fill"></i> <strong>{{ ok }} vol(s) importé(s).</strong>
+      </div>
+      {% if erreurs %}
+      <div class="alert alert-warning">
+        <strong>{{ erreurs|length }} erreur(s) :</strong>
+        <ul class="mb-0 mt-2">{% for e in erreurs %}<li>{{ e }}</li>{% endfor %}</ul>
+      </div>
+      {% endif %}
+      <a href="{% url 'import_vols_csv' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-repeat"></i> Importer un autre fichier
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
