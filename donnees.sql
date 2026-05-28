@@ -33,4 +33,4 @@ INSERT INTO avion (nom, compagnie_id, modele_id) VALUES
 ('F-HBNA', 1, 3), ('G-EZAA', 2, 1), ('G-EZAB', 2, 1),
 ('G-EZAC', 2, 2), ('EI-DCL', 3, 2), ('EI-DCM', 3, 2),
 ('EI-ENL', 3, 1), ('F-GZHG', 4, 1), ('F-GZHH', 4, 1),
-('F-HBXA', 1, 5), ('F-ATRC', 1, 6), ('G-EZAD', 2, 3);
+('F-HBXA', 1, 5), ('F-ATRC', 1, 6), ('G-EZAD', 2, 3);  
