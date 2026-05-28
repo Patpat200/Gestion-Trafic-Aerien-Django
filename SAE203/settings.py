@@ -74,16 +74,30 @@ WSGI_APPLICATION = 'SAE203.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'trafic_aerien',
+#         'USER': 'django_user',
+#         'PASSWORD': 'django1234',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'trafic_aerien',
-        'USER': 'django_user',
-        'PASSWORD': 'django1234',
+        'NAME': 'trafic_aerien', 
+        'USER': 'root',
+        'PASSWORD': '',  # Laisse vide si tu es sur XAMPP/WAMP
         'HOST': 'localhost',
         'PORT': '3306',
     }
 }
+
+
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

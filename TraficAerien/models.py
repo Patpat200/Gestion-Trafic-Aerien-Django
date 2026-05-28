@@ -1,7 +1,5 @@
 from django.db import models
 
-from django.db import models
-
 class Aeroport(models.Model):
     nom = models.CharField(max_length=100)
     pays = models.CharField(max_length=100)
