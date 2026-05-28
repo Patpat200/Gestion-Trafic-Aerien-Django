@@ -6,6 +6,8 @@ class Aeroport(models.Model):
     class Meta:
         managed = False
         db_table = 'aeroport'
+
+    
     def __str__(self):
         return f"{self.nom} ({self.pays})"
 
@@ -16,6 +18,8 @@ class Piste(models.Model):
     class Meta:
         managed = False
         db_table = 'piste'
+
+    
     def __str__(self):
         return f"Piste {self.numero} — {self.aeroport.nom}"
 
@@ -26,6 +30,8 @@ class Compagnie(models.Model):
     class Meta:
         managed = False
         db_table = 'compagnie'
+
+    
     def __str__(self):
         return self.nom
 
@@ -38,6 +44,8 @@ class TypeAvion(models.Model):
     class Meta:
         managed = False
         db_table = 'typeavion'
+
+    
     def __str__(self):
         return f"{self.marque} {self.modele}"
 
@@ -48,6 +56,8 @@ class Avion(models.Model):
     class Meta:
         managed = False
         db_table = 'avion'
+
+    
     def __str__(self):
         return f"{self.nom} ({self.compagnie})"
 
@@ -62,6 +72,8 @@ class Vol(models.Model):
     class Meta:
         managed = False
         db_table = 'vol'
+
+    
     def __str__(self):
         return f"Vol {self.id} — {self.aeroport_depart} -> {self.aeroport_arrivee}"
 

@@ -27,6 +27,8 @@ urlpatterns = [
     path('vols/ajouter/', views.vol_creer, name='vol_creer'),
     path('vols/modifier/<int:pk>/', views.vol_modifier, name='vol_modifier'),
     path('vols/supprimer/<int:pk>/', views.vol_supprimer, name='vol_supprimer'),
+    path('vols/import/', views.import_vols_csv, name='import_vols_csv'),
+    path('vols/fiches/', views.fiche_vols, name='fiche_vols'),
 
 
     # Compagnies
@@ -42,7 +44,4 @@ urlpatterns = [
     path('typesavions/supprimer/<int:pk>/', views.typeavion_supprimer, name='typeavion_supprimer'),
 
 
-    # Vols
-    path('vols/import/', views.import_vols_csv, name='import_vols_csv'),
-    path('vols/fiches/', views.fiche_vols, name='fiche_vols'),
 ]
