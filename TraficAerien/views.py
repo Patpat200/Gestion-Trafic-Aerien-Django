@@ -1,9 +1,14 @@
+import csv, io
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Aeroport, Piste, Compagnie, TypeAvion, Avion, Vol
 from .forms import AeroportForm, PisteForm, CompagnieForm, TypeAvionForm, AvionForm, VolForm
 
 def index(request):
     return render(request, 'TraficAerien/index.html')
+
+
+
+
 
 # ───── AÉROPORTS ─────
 def aeroport_liste(request):
@@ -44,6 +49,11 @@ def aeroport_supprimer(request, pk):
         'objet': aeroport, 'titre': 'Supprimer un aéroport'
     })
 
+
+
+
+
+
 # ───── PISTES ─────
 def piste_liste(request):
     pistes = Piste.objects.all()
@@ -82,6 +92,10 @@ def piste_supprimer(request, pk):
     return render(request, 'TraficAerien/confirmer_suppression.html', {
         'objet': piste, 'titre': 'Supprimer une piste'
     })
+
+
+
+
 
 # ───── AVIONS ─────
 def avion_liste(request):
@@ -122,20 +136,81 @@ def avion_supprimer(request, pk):
         'objet': avion, 'titre': 'Supprimer un avion'
     })
 
+
+
+
 # ───── VOLS ─────
 def vol_liste(request):
     vols = Vol.objects.all()
     return render(request, 'TraficAerien/vol_liste.html', {'vols': vols})
 
+from datetime import timedelta
+from django.contrib import messages
+
 def vol_creer(request):
+    suggestion = None
     if request.method == 'POST':
         form = VolForm(request.POST)
         if form.is_valid():
-            form.save()
+            vol = form.save(commit=False)
+            type_avion = vol.avion.modele
+            aeroport_arr = vol.aeroport_arrivee
+            heure_arr = vol.date_heure_arrivee
+            fenetre = timedelta(minutes=10)
+
+            # 1. Pistes de longueur compatible
+            pistes_compat = Piste.objects.filter(
+                aeroport=aeroport_arr,
+                longueur__gte=type_avion.longueur_piste_necessaire
+            )
+
+            if not pistes_compat.exists():
+                messages.error(request, f"Aucune piste compatible à {aeroport_arr} pour un {type_avion} (nécessite {type_avion.longueur_piste_necessaire}m).")
+                return render(request, 'TraficAerien/formulaire.html', {'form': form, 'titre': 'Ajouter un vol'})
+
+            # 2. Chercher une piste libre (règle 10 minutes)
+            piste_libre = None
+            for piste in pistes_compat:
+                conflit = Vol.objects.filter(
+                    piste_arrivee=piste,
+                    date_heure_arrivee__gt=heure_arr - fenetre,
+                    date_heure_arrivee__lt=heure_arr + fenetre
+                ).exists()
+                if not conflit:
+                    piste_libre = piste
+                    break
+
+            # 3. Si aucune piste libre → chercher un horaire alternatif
+            if piste_libre is None:
+                heure_test = heure_arr
+                for _ in range(48):  # max 48 tentatives = 8h
+                    heure_test += fenetre
+                    for piste in pistes_compat:
+                        conflit = Vol.objects.filter(
+                            piste_arrivee=piste,
+                            date_heure_arrivee__gt=heure_test - fenetre,
+                            date_heure_arrivee__lt=heure_test + fenetre
+                        ).exists()
+                        if not conflit:
+                            piste_libre = piste
+                            break
+                    if piste_libre:
+                        break
+                suggestion = heure_test
+                return render(request, 'TraficAerien/vol_form.html', {
+                    'form': form,
+                    'titre': 'Ajouter un vol',
+                    'suggestion': suggestion
+                })
+
+            # 4. Tout est bon → sauvegarder
+            vol.piste_arrivee = piste_libre
+            vol.save()
+            messages.success(request, f"Vol créé — Piste {piste_libre.numero} assignée.")
             return redirect('vol_liste')
     else:
         form = VolForm()
-    return render(request, 'TraficAerien/formulaire.html', {
+    return render(request, 'TraficAerien/vol_form.html', {
         'form': form, 'titre': 'Ajouter un vol'
     })
 
@@ -204,6 +279,10 @@ def compagnie_supprimer(request, pk):
         'objet': compagnie, 'titre': 'Supprimer une compagnie'
     })
 
+
+
+
+
 # ───── TYPES D'AVIONS ─────
 def typeavion_liste(request):
     types = TypeAvion.objects.all()
@@ -242,3 +321,10 @@ def typeavion_supprimer(request, pk):
     return render(request, 'TraficAerien/confirmer_suppression.html', {
         'objet': type_avion, 'titre': 'Supprimer un type d\'avion'
     })
+
+def import_vols_csv(request):
+    return render(request, 'TraficAerien/import_vols.html', {})
+
+def fiche_vols(request):
+    aeroports = Aeroport.objects.all()
+    return render(request, 'TraficAerien/fiche_vols.html', {'aeroports': aeroports, 'vols': None})

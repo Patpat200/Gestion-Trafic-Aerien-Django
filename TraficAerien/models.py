@@ -48,6 +48,9 @@ class Vol(models.Model):
     date_heure_depart = models.DateTimeField()
     aeroport_arrivee = models.ForeignKey(Aeroport, on_delete=models.CASCADE, related_name='vols_arrivee')
     date_heure_arrivee = models.DateTimeField()
+    piste_arrivee = models.ForeignKey('Piste', on_delete=models.SET_NULL, null=True, blank=True, related_name='vols')
+
 
     def __str__(self):
-        return f"Vol {self.id} — {self.aeroport_depart} → {self.aeroport_arrivee}"
+        return f"Vol {self.id} — {self.aeroport_depart} -> {self.aeroport_arrivee}"
+
