@@ -21,7 +21,7 @@ class Piste(models.Model):
 
     
     def __str__(self):
-        return f"Piste {self.numero} — {self.aeroport.nom}"
+        return f"Piste {self.numero} - {self.aeroport.nom}"
 
 class Compagnie(models.Model):
     nom = models.CharField(max_length=100)
@@ -49,6 +49,7 @@ class TypeAvion(models.Model):
     def __str__(self):
         return f"{self.marque} {self.modele}"
 
+
 class Avion(models.Model):
     nom = models.CharField(max_length=100)
     compagnie = models.ForeignKey(Compagnie, on_delete=models.CASCADE)
@@ -75,5 +76,5 @@ class Vol(models.Model):
 
     
     def __str__(self):
-        return f"Vol {self.id} — {self.aeroport_depart} -> {self.aeroport_arrivee}"
+        return f"Vol {self.id} - {self.aeroport_depart} -> {self.aeroport_arrivee}"
 

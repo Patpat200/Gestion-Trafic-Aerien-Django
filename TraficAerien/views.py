@@ -179,8 +179,8 @@ def vol_creer(request):
                 for ancien_vol in vols_existants:
                     if ancien_vol.piste_arrivee == piste:
                         # On calcule l'écart de temps en secondes
-                        ecart = abs((ancien_vol.date_heure_arrivee - heure_arr).total_seconds())
-                        if ecart < 600:  # 600 secondes = 10 minutes
+                        ecart = (ancien_vol.date_heure_arrivee - heure_arr).total_seconds()
+                        if ecart < 600 and ecart > -600:  # 600 secondes = 10 minutes
                             occupee = True
                             break  # On sort de la boucle, cette piste est prise
                 
@@ -199,8 +199,8 @@ def vol_creer(request):
                         occupee = False
                         for ancien_vol in vols_existants:
                             if ancien_vol.piste_arrivee == piste:
-                                ecart = abs((ancien_vol.date_heure_arrivee - heure_test).total_seconds())
-                                if ecart < 600:
+                                ecart = (ancien_vol.date_heure_arrivee - heure_test).total_seconds()
+                                if ecart < 600 and ecart > -600: 
                                     occupee = True
                                     break
                         if occupee == False:
@@ -297,41 +297,47 @@ def fiche_vols(request):
 
 
 def import_vols_csv(request):
+    ok = 0
+    erreurs = []
+    termine = False
+
     if request.method == 'POST':
-        # On vérifie qu'un fichier a bien été uploadé
-        if 'fichier_csv' not in request.FILES:
-            messages.error(request, "Veuillez sélectionner un fichier.")
+        fichier = request.FILES.get('fichier_csv')
+        
+        if not fichier:
+            messages.error(request, "Pas de fichier reçu")
             return redirect('import_vols_csv')
-        
-        fichier = request.FILES['fichier_csv']
-        
-        try:
-            # On lit le fichier texte
-            donnees_decodees = fichier.read().decode('utf-8')
-            lecteur = csv.reader(io.StringIO(donnees_decodees), delimiter=';') # On utilise souvent le point-virgule en France
-            
-            next(lecteur) # Permet de sauter la première ligne (qui contient souvent les titres des colonnes)
-            
-            compteur = 0
-            for ligne in lecteur:
-                # Création du vol en base de données ligne par ligne
+
+        donnees = fichier.read().decode('utf-8')
+        lecteur = csv.reader(io.StringIO(donnees))
+        next(lecteur) # on saute la ligne des titres
+
+        for ligne in lecteur:
+            try:
+                avion = Avion.objects.get(nom=ligne[0])
+                aero_dep = Aeroport.objects.get(nom=ligne[2])
+                aero_arr = Aeroport.objects.get(nom=ligne[4])
+
                 Vol.objects.create(
-                    avion_id=ligne[0],
+                    avion=avion,
                     pilote=ligne[1],
-                    aeroport_depart_id=ligne[2],
+                    aeroport_depart=aero_dep,
                     date_heure_depart=ligne[3],
-                    aeroport_arrivee_id=ligne[4],
+                    aeroport_arrivee=aero_arr,
                     date_heure_arrivee=ligne[5]
                 )
-                compteur += 1
-                
-            messages.success(request, f"{compteur} vols importés avec succès !")
-            return redirect('vol_liste')
-            
-        except Exception as e:
-            messages.error(request, f"Erreur lors de la lecture du fichier CSV : {e}")
+                ok += 1
 
-    return render(request, 'TraficAerien/import_vols.html', {})
+            except Exception as e:
+                erreurs.append(f"Ligne {ok + len(erreurs) + 2} : {e}")
+
+        termine = True
+
+    return render(request, 'TraficAerien/import_vols.html', {
+        'termine': termine,
+        'ok': ok,
+        'erreurs': erreurs
+    })
 
 
 
