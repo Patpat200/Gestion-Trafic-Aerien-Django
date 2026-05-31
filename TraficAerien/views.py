@@ -13,7 +13,7 @@ def index(request):
 
 
 
-# ───── AÉROPORTS ─────
+# AÉROPORTS 
 def aeroport_liste(request):
     aeroports = Aeroport.objects.all()
     return render(request, 'TraficAerien/aeroport_liste.html', {'aeroports': aeroports})
@@ -57,7 +57,7 @@ def aeroport_supprimer(request, pk):
 
 
 
-# ───── PISTES ─────
+# PISTES 
 def piste_liste(request):
     pistes = Piste.objects.all()
     return render(request, 'TraficAerien/piste_liste.html', {'pistes': pistes})
@@ -100,7 +100,7 @@ def piste_supprimer(request, pk):
 
 
 
-# ───── AVIONS ─────
+# AVIONS 
 def avion_liste(request):
     avions = Avion.objects.all()
     return render(request, 'TraficAerien/avion_liste.html', {'avions': avions})
@@ -142,7 +142,7 @@ def avion_supprimer(request, pk):
 
 
 
-# ───── VOLS ─────
+# VOLS 
 def vol_liste(request):
     vols = Vol.objects.all()
     return render(request, 'TraficAerien/vol_liste.html', {'vols': vols})
@@ -158,7 +158,7 @@ def vol_creer(request):
             aeroport_arr = vol.aeroport_arrivee
             heure_arr = vol.date_heure_arrivee
 
-            # BOUCLE 1 : On cherche les pistes assez longues (façon algorithmique classique)
+            # pistes assez longues
             toutes_les_pistes = Piste.objects.filter(aeroport=aeroport_arr)
             pistes_compatibles = []
             
@@ -174,7 +174,7 @@ def vol_creer(request):
             vols_existants = Vol.objects.filter(aeroport_arrivee=aeroport_arr)
             piste_libre = None
             
-            # BOUCLE 2 : On vérifie si les pistes compatibles sont libres
+            # verif si piste libre
             for piste in pistes_compatibles:
                 occupee = False
                 for ancien_vol in vols_existants:
@@ -189,7 +189,7 @@ def vol_creer(request):
                     piste_libre = piste
                     break
 
-            # BOUCLE 3 : Si tout est occupé, on cherche le prochain créneau libre
+            # cherche prochain creneau
             if piste_libre is None:
                 heure_test = heure_arr
                 for i in range(1, 49):  # On teste jusqu'à 8 heures (48 créneaux de 10min)
@@ -219,7 +219,7 @@ def vol_creer(request):
                 messages.error(request, "Impossible de trouver une piste libre dans les 8 prochaines heures.")
                 return render(request, 'TraficAerien/vol_form.html', {'form': form, 'titre': 'Ajouter un vol'})
 
-            # Si on arrive ici, tout est bon, on sauvegarde en base
+            # ok on sauvegarde
             vol.piste_arrivee = piste_libre
             vol.save()
             messages.success(request, f"Vol créé avec succès sur la piste {piste_libre.numero}.")
@@ -267,12 +267,9 @@ def fiche_vols(request):
         if aero_id and date_sel:
             aeroport_sel = get_object_or_404(Aeroport, pk=aero_id)
             
-            # Transformation de la chaîne date en objet date pour un filtrage plus robuste
             try:
                 date_obj = datetime.strptime(date_sel, '%Y-%m-%d').date()
                 
-                # On définit le début et la fin de la journée
-                # Cela évite les problèmes de __date avec MySQL quand les tables TZ ne sont pas chargées
                 debut = timezone.make_aware(datetime.combine(date_obj, time.min))
                 fin = timezone.make_aware(datetime.combine(date_obj, time.max))
                 
@@ -287,7 +284,6 @@ def fiche_vols(request):
                         date_heure_arrivee__range=(debut, fin)
                     ).order_by('date_heure_arrivee')
             except ValueError:
-                # Si la date est mal formée, on ne renvoie rien
                 vols_trouves = Vol.objects.none()
 
     return render(request, 'TraficAerien/fiche_vols.html', {
@@ -314,9 +310,8 @@ def import_vols_csv(request):
             messages.error(request, "Pas de fichier reçu")
             return redirect('import_vols_csv')
 
-        donnees = fichier.read().decode('utf-8')
-        lecteur = csv.reader(io.StringIO(donnees))
-        next(lecteur) # on saute la ligne des titres
+        fichier_decode = fichier.read().decode('utf-8').splitlines()
+        lecteur = csv.DictReader(fichier_decode)
 
         for ligne in lecteur:
             try:
@@ -353,7 +348,7 @@ def import_vols_csv(request):
 
 
 
-# ───── COMPAGNIES ─────
+# COMPAGNIES 
 def compagnie_liste(request):
     compagnies = Compagnie.objects.all()
     return render(request, 'TraficAerien/compagnie_liste.html', {'compagnies': compagnies})
@@ -396,7 +391,7 @@ def compagnie_supprimer(request, pk):
 
 
 
-# ───── TYPES D'AVIONS ─────
+# TYPES D'AVIONS 
 def typeavion_liste(request):
     types = TypeAvion.objects.all()
     return render(request, 'TraficAerien/typeavion_liste.html', {'types': types})
