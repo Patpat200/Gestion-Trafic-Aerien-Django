@@ -9,7 +9,12 @@
       <i class="bi bi-exclamation-triangle-fill"></i>
       <strong>Toutes les pistes sont occupées</strong> à l'heure demandée.<br>
       Horaire alternatif disponible : <strong>{{ suggestion|date:"d/m/Y H:i" }}</strong>
-      <br><small>Modifiez l'heure d'arrivée dans le formulaire ci-dessous.</small>
+      <div class="mt-2">
+        <button type="button" class="btn btn-sm btn-outline-warning" 
+                onclick="document.getElementsByName('date_heure_arrivee')[0].value='{{ suggestion|date:'Y-m-d\TH:i' }}';">
+          <i class="bi bi-clock-history"></i> Appliquer cet horaire
+        </button>
+      </div>
     </div>
     {% endif %}
 

@@ -47,7 +47,10 @@
 {% if vols is not None %}
 <div class="card">
   <div class="card-header d-flex justify-content-between align-items-center">
-    <strong>{{ sens|capfirst }}s — {{ aeroport_sel.nom }} — {{ date_sel }}</strong>
+    <strong>
+      {% if sens == 'depart' %}Départs{% else %}Arrivées{% endif %} 
+      — {{ aeroport_sel.nom }} — {{ date_sel }}
+    </strong>
     <span class="badge bg-secondary">{{ vols|length }} vol(s)</span>
   </div>
   <table class="table table-hover mb-0">

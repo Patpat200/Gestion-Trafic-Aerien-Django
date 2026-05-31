@@ -1,8 +1,9 @@
 import csv, io
+from datetime import date, datetime, time, timedelta
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 from .models import Aeroport, Piste, Compagnie, TypeAvion, Avion, Vol
 from .forms import AeroportForm, PisteForm, CompagnieForm, TypeAvionForm, AvionForm, VolForm
-from datetime import timedelta
 from django.contrib import messages
 
 def index(request):
@@ -177,44 +178,46 @@ def vol_creer(request):
             for piste in pistes_compatibles:
                 occupee = False
                 for ancien_vol in vols_existants:
+                    # On ne compare que s'il y a une piste assignée
                     if ancien_vol.piste_arrivee == piste:
-                        # On calcule l'écart de temps en secondes
-                        ecart = (ancien_vol.date_heure_arrivee - heure_arr).total_seconds()
-                        if ecart < 600 and ecart > -600:  # 600 secondes = 10 minutes
+                        ecart = abs((ancien_vol.date_heure_arrivee - heure_arr).total_seconds())
+                        if ecart < 600:  # Moins de 10 minutes d'écart
                             occupee = True
-                            break  # On sort de la boucle, cette piste est prise
+                            break
                 
-                if occupee == False:
+                if not occupee:
                     piste_libre = piste
-                    break  # Super, on a trouvé une piste, on arrête de chercher !
+                    break
 
-            # BOUCLE 3 : Si tout est occupé, on avance de 10 min en 10 min
+            # BOUCLE 3 : Si tout est occupé, on cherche le prochain créneau libre
             if piste_libre is None:
                 heure_test = heure_arr
-                for i in range(48):  # On teste pendant 8 heures maximum (48 * 10min)
-                    heure_test = heure_test + timedelta(minutes=10)
+                for i in range(1, 49):  # On teste jusqu'à 8 heures (48 créneaux de 10min)
+                    heure_test = heure_arr + timedelta(minutes=10 * i)
                     
-                    # On refait le même test avec le nouvel horaire
                     for piste in pistes_compatibles:
                         occupee = False
                         for ancien_vol in vols_existants:
                             if ancien_vol.piste_arrivee == piste:
-                                ecart = (ancien_vol.date_heure_arrivee - heure_test).total_seconds()
-                                if ecart < 600 and ecart > -600: 
+                                ecart = abs((ancien_vol.date_heure_arrivee - heure_test).total_seconds())
+                                if ecart < 600: 
                                     occupee = True
                                     break
-                        if occupee == False:
+                        if not occupee:
                             piste_libre = piste
                             break
                     
                     if piste_libre is not None:
-                        break  # On a enfin trouvé un créneau
-                
-                suggestion = heure_test
-                messages.warning(request, f"Attention, piste occupée ! Nouveau créneau proposé : {suggestion}")
-                return render(request, 'TraficAerien/vol_form.html', {
-                    'form': form, 'titre': 'Ajouter un vol', 'suggestion': suggestion
-                })
+                        # On a trouvé un créneau, on propose la modification
+                        suggestion = heure_test
+                        messages.warning(request, f"Attention, toutes les pistes sont occupées à cette heure. Nouveau créneau disponible : {suggestion.strftime('%H:%M')}")
+                        return render(request, 'TraficAerien/vol_form.html', {
+                            'form': form, 'titre': 'Ajouter un vol', 'suggestion': suggestion
+                        })
+
+                # Si après 8h on n'a toujours rien
+                messages.error(request, "Impossible de trouver une piste libre dans les 8 prochaines heures.")
+                return render(request, 'TraficAerien/vol_form.html', {'form': form, 'titre': 'Ajouter un vol'})
 
             # Si on arrive ici, tout est bon, on sauvegarde en base
             vol.piste_arrivee = piste_libre
@@ -253,37 +256,40 @@ def vol_supprimer(request, pk):
 def fiche_vols(request):
     aeroports = Aeroport.objects.all()
     
-    # On prépare des variables vides par défaut (quand on arrive sur la page)
     vols_trouves = None
     aeroport_sel = None
-    date_sel = ""
-    sens_sel = ""
+    date_sel = request.GET.get('date', "")
+    sens_sel = request.GET.get('sens', 'depart')
     
-    # Si on détecte qu'une recherche a été lancée (présence de 'aeroport_id' dans l'URL)
     if 'aeroport_id' in request.GET:
-        # On récupère EXACTEMENT les "name" de ton formulaire HTML
         aero_id = request.GET.get('aeroport_id')
-        date_sel = request.GET.get('date')
-        sens_sel = request.GET.get('sens')
         
-        # On s'assure que l'utilisateur a bien rempli l'aéroport et la date
         if aero_id and date_sel:
-            # On récupère l'objet Aéroport pour l'afficher dans le titre du HTML
-            aeroport_sel = Aeroport.objects.get(pk=aero_id)
+            aeroport_sel = get_object_or_404(Aeroport, pk=aero_id)
             
-            # On filtre selon le choix du menu déroulant "Sens"
-            if sens_sel == 'depart':
-                vols_trouves = Vol.objects.filter(
-                    aeroport_depart=aeroport_sel, 
-                    date_heure_depart__date=date_sel
-                )
-            elif sens_sel == 'arrivee':
-                vols_trouves = Vol.objects.filter(
-                    aeroport_arrivee=aeroport_sel, 
-                    date_heure_arrivee__date=date_sel
-                )
+            # Transformation de la chaîne date en objet date pour un filtrage plus robuste
+            try:
+                date_obj = datetime.strptime(date_sel, '%Y-%m-%d').date()
+                
+                # On définit le début et la fin de la journée
+                # Cela évite les problèmes de __date avec MySQL quand les tables TZ ne sont pas chargées
+                debut = timezone.make_aware(datetime.combine(date_obj, time.min))
+                fin = timezone.make_aware(datetime.combine(date_obj, time.max))
+                
+                if sens_sel == 'depart':
+                    vols_trouves = Vol.objects.filter(
+                        aeroport_depart=aeroport_sel, 
+                        date_heure_depart__range=(debut, fin)
+                    ).order_by('date_heure_depart')
+                elif sens_sel == 'arrivee':
+                    vols_trouves = Vol.objects.filter(
+                        aeroport_arrivee=aeroport_sel, 
+                        date_heure_arrivee__range=(debut, fin)
+                    ).order_by('date_heure_arrivee')
+            except ValueError:
+                # Si la date est mal formée, on ne renvoie rien
+                vols_trouves = Vol.objects.none()
 
-    # On envoie toutes les informations au template pour qu'il puisse tout afficher
     return render(request, 'TraficAerien/fiche_vols.html', {
         'aeroports': aeroports, 
         'vols': vols_trouves,
