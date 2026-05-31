@@ -1,0 +1,11 @@
+avion,pilote,aeroport_depart,date_heure_depart,aeroport_arrivee,date_heure_arrivee
+F-GKXA,Jean Dupont,Charles de Gaulle,2026-06-01 08:00,Lyon Saint-Exupery,2026-06-01 09:15
+F-GKXB,Marie Martin,Orly,2026-06-01 09:30,Nice Cote d Azur,2026-06-01 11:00
+G-EZAA,Pierre Durand,Lyon Saint-Exupery,2026-06-01 10:15,Charles de Gaulle,2026-06-01 11:30
+EI-DCL,Sophie Bernard,Nice Cote d Azur,2026-06-01 12:00,Orly,2026-06-01 13:45
+F-HBNA,Lucas Petit,Marseille Provence,2026-06-01 13:30,Charles de Gaulle,2026-06-01 15:00
+F-WXYZ,Emma Robert,Charles de Gaulle,2026-06-01 14:00,Lyon Saint-Exupery,2026-06-01 15:30
+G-EZAB,Thomas Leroy,Orly,2026-06-01 15:00,Lyon Saint-Exupery,2026-06-01 16:15
+EI-DCM,Julie Moreau,Lyon Saint-Exupery,2026-06-01 16:30,Nice Cote d Azur,2026-06-01 17:45
+F-HBXA,Nicolas Simon,Charles de Gaulle,2026-06-01 18:00,Marseille Provence,2026-06-01 19:30
+F-GZHG,Camille Lefebvre,Nice Cote d Azur,2026-06-01 19:15,Charles de Gaulle,2026-06-01 21:00
