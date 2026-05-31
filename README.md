@@ -103,4 +103,4 @@ requirements.txt → dépendances Python
 
 ## Schéma Relationnel
 
-![Schéma Relationnel](schema-relationnel.png)
+![Schéma Relationnel](doc/schema-relationnel.png)
