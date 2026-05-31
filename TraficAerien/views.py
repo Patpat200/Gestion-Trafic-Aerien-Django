@@ -310,8 +310,8 @@ def import_vols_csv(request):
             messages.error(request, "Pas de fichier reçu")
             return redirect('import_vols_csv')
 
-        fichier_decode = fichier.read().decode('utf-8').splitlines()
-        lecteur = csv.DictReader(fichier_decode)
+        fichier_decode = fichier.read().decode('utf-8-sig')
+        lecteur = csv.reader(io.StringIO(fichier_decode), delimiter=',')
 
         for ligne in lecteur:
             try:
@@ -330,7 +330,7 @@ def import_vols_csv(request):
                 ok += 1
 
             except Exception as e:
-                erreurs.append(f"Ligne {ok + len(erreurs) + 2} : {e}")
+                erreurs.append(f"Ligne {ok + len(erreurs) + 2} : {type(e).__name__} - {e}")
 
         termine = True
 

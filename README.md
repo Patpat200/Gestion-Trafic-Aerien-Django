@@ -1,101 +1,106 @@
-# Gestion-Trafic-A-rien-Django
-SAE2.03
+# SAE 2.03 — Gestion du Trafic Aérien
 
-# Guide de Configuration Django : Du Projet Vierge à la Première Page
+Application web Django pour gérer le trafic aérien : aéroports, pistes, compagnies, avions et vols.
 
-Ce document détaille les étapes pour installer Django, configurer un environnement de travail propre et ajouter une nouvelle page à votre application.
+## Prérequis
 
-## 1. Prérequis et Environnement Virtuel
+- Python 3.x
+- Accès à un serveur MySQL (par défaut : `192.168.1.80:3306`)
 
-Il est essentiel d'utiliser un environnement virtuel (`venv`) pour isoler les dépendances de votre projet.
+## Installation
 
-1. **Créer l'environnement virtuel :**
-   ```bash
-   python -m venv venv
-   ```
-2. **Activer l'environnement :**
-   * **Windows :** `./venv/Scripts/activate`
-   * **Mac/Linux :** `source venv/bin/activate`
-
-## 2. Installation de Django
-
-Une fois l'environnement activé, installez Django via `pip` :
+**1. Cloner le repo**
 ```bash
-pip install django
+git clone <url_du_repo>
+cd <nom_du_dossier>
 ```
 
-## 3. Création du Projet et de l'Application
+**2. Créer l'environnement virtuel**
+```bash
+python -m venv venv
+```
+```bash
+# Windows
+./venv/Scripts/activate
 
-1. **Créer le projet (ex: `firstproject`) :**
-   ```bash
-   django-admin startproject firstproject .
-   ```
-2. **Créer l'application (ex: `myfirstapp`) :**
-   ```bash
-   python manage.py startapp myfirstapp
-   ```
-3. **Déclarer l'application :**
-   Ajoutez `'myfirstapp.apps.MyfirstappConfig'` à la liste `INSTALLED_APPS` dans `firstproject/settings.py`.
+# Linux / Mac
+source venv/bin/activate
+```
 
-## 4. Configuration des URLs Globales
+**3. Installer les dépendances**
+```bash
+pip install -r requirements.txt
+```
 
-Dans le fichier `firstproject/urls.py`, incluez les URLs de votre application pour qu'elles soient reconnues par le projet :
+**4. Créer la base de données**
 
+Sur le serveur MySQL :
+```sql
+CREATE DATABASE trafic_aerien CHARACTER SET utf8mb4;
+CREATE USER 'django_user'@'%' IDENTIFIED BY 'toto';
+GRANT ALL PRIVILEGES ON trafic_aerien.* TO 'django_user'@'%';
+FLUSH PRIVILEGES;
+```
+
+Puis exécuter les scripts SQL :
+```bash
+mysql -u django_user -p trafic_aerien < schema.sql
+mysql -u django_user -p trafic_aerien < donnees.sql
+```
+
+**5. Configurer la connexion**
+
+Dans `SAE203/settings.py`, modifier si besoin :
 ```python
-from django.contrib import admin
-from django.urls import path, include
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('myfirstapp/', include('myfirstapp.urls')), # Redirige vers les URLs de l'app
-]
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'trafic_aerien',
+        'USER': 'django_user',
+        'PASSWORD': 'toto',
+        'HOST': '192.168.1.80',
+        'PORT': '3306',
+    }
+}
 ```
 
-## 5. Ajouter une Nouvelle Page (ex: "formulaire")
-
-Pour ajouter une page, suivez toujours ces trois étapes :
-
-### Étape A : Créer la Vue
-Dans `myfirstapp/views.py`, définissez la fonction qui traitera la requête :
-```python
-from django.shortcuts import render
-
-def formulaire(request):
-    return render(request, 'myfirstapp/formulaire.html')
-```
-
-### Étape B : Configurer l'URL de l'Application
-Créez ou modifiez `myfirstapp/urls.py`. **Important :** Donnez toujours un `name` à vos routes pour éviter les erreurs `NoReverseMatch` :
-```python
-from django.urls import path
-from . import views
-
-urlpatterns = [
-    path('index/', views.index, name='index'),
-    path('formulaire/', views.formulaire, name='formulaire'), # Le nom 'formulaire' est utilisé pour les liens
-]
-```
-
-### Étape C : Créer le Template
-Créez le fichier HTML dans le dossier suivant : `myfirstapp/templates/myfirstapp/formulaire.html`.
-```html
-<!DOCTYPE html>
-<html>
-<body>
-    <h1>Nouvelle Page</h1>
-    <form action="" method="post">
-        {% csrf_token %} <input type="text" name="nom">
-        <button type="submit">Envoyer</button>
-    </form>
-    <a href="{% url 'index' %}">Retour à l'accueil</a>
-</body>
-</html>
-```
-
-## 6. Lancement du Serveur
-
-Pour tester votre configuration :
+**6. Lancer le serveur**
 ```bash
 python manage.py runserver
 ```
-Accédez ensuite à votre nouvelle page via : `http://127.0.0.1:8000/myfirstapp/formulaire/`
+
+L'application est accessible sur : http://127.0.0.1:8000/
+
+## Fonctionnalités
+
+- Gestion des aéroports, pistes, compagnies, types d'avions et avions (ajout, modification, suppression)
+- Création de vols avec attribution automatique de piste selon la longueur disponible et les créneaux horaires
+- Suggestion d'un créneau alternatif si toutes les pistes sont occupées
+- Import de vols en masse via fichier CSV
+- Fiches de vols filtrables par aéroport, date et sens (départs / arrivées), imprimables
+
+## Format CSV pour l'import de vols
+
+```
+avion,pilote,aeroport_depart,date_heure_depart,aeroport_arrivee,date_heure_arrivee
+F-GKXA,Jean Dupont,Charles de Gaulle,2026-06-01 08:00,Lyon Saint-Exupery,2026-06-01 09:15
+```
+
+## Structure du projet
+
+```
+SAE203/          → configuration Django (settings, urls)
+TraficAerien/    → application principale
+  models.py      → modèles (6 tables)
+  views.py       → vues et logique métier
+  forms.py       → formulaires
+  urls.py        → routes
+  templates/     → pages HTML
+schema.sql       → création des tables
+donnees.sql      → données de test
+requirements.txt → dépendances Python
+```
+
+## Schéma Relationnel
+
+![Schéma Relationnel](schema-relationnel.png)
