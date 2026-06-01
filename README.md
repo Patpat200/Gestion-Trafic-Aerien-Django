@@ -11,8 +11,8 @@ Application web Django pour gérer le trafic aérien : aéroports, pistes, compa
 
 **1. Cloner le repo**
 ```bash
-git clone <url_du_repo>
-cd <nom_du_dossier>
+git clone https://github.com/Patpat200/Gestion-Trafic-Aerien-Django
+cd Gestion-Trafic-Aerien-Django
 ```
 
 **2. Créer l'environnement virtuel**
