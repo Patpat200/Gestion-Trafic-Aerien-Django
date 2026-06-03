@@ -3,31 +3,85 @@
 {% block title %}Accueil — AirTraffic Manager{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
+<div class="row mb-4 align-items-center">
     <div class="col">
-        <h2><i class="bi bi-house"></i> Tableau de bord</h2>
-        <p class="text-muted">Bienvenue dans l'interface de gestion du trafic aérien.</p>
+        <h2 class="mb-0"><i class="bi bi-house"></i> Tableau de bord</h2>
+        <p class="text-muted mt-1 mb-0">Bienvenue dans l'interface de gestion du trafic aérien.</p>
+    </div>
+    <div class="col-auto">
+        <span class="badge bg-success fs-6">
+            <i class="bi bi-calendar-check"></i>
+            {{ vols_today }} vol(s) aujourd'hui
+        </span>
     </div>
 </div>
 
-<div class="row g-3">
+<!-- Compteurs principaux -->
+<div class="row g-3 mb-4">
     <div class="col-md-4">
-        <div class="card text-center p-3">
-            <i class="bi bi-building fs-1 text-primary"></i>
-            <h5 class="mt-2">Aéroports</h5>
-        </div>
+        <a href="{% url 'aeroport_liste' %}" class="text-decoration-none">
+            <div class="card text-center p-3 h-100 dashboard-card">
+                <i class="bi bi-building fs-1 text-primary mb-2"></i>
+                <h2 class="fw-bold mb-0">{{ nb_aeroports }}</h2>
+                <p class="text-muted mb-0">Aéroport{{ nb_aeroports|pluralize }}</p>
+            </div>
+        </a>
     </div>
     <div class="col-md-4">
-        <div class="card text-center p-3">
-            <i class="bi bi-airplane-fill fs-1 text-success"></i>
-            <h5 class="mt-2">Avions</h5>
-        </div>
+        <a href="{% url 'piste_liste' %}" class="text-decoration-none">
+            <div class="card text-center p-3 h-100 dashboard-card">
+                <i class="bi bi-distribute-horizontal fs-1 text-info mb-2"></i>
+                <h2 class="fw-bold mb-0">{{ nb_pistes }}</h2>
+                <p class="text-muted mb-0">Piste{{ nb_pistes|pluralize }}</p>
+            </div>
+        </a>
     </div>
     <div class="col-md-4">
-        <div class="card text-center p-3">
-            <i class="bi bi-calendar3 fs-1 text-warning"></i>
-            <h5 class="mt-2">Vols</h5>
-        </div>
+        <a href="{% url 'compagnie_liste' %}" class="text-decoration-none">
+            <div class="card text-center p-3 h-100 dashboard-card">
+                <i class="bi bi-briefcase-fill fs-1 text-secondary mb-2"></i>
+                <h2 class="fw-bold mb-0">{{ nb_compagnies }}</h2>
+                <p class="text-muted mb-0">Compagnie{{ nb_compagnies|pluralize }}</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{% url 'typeavion_liste' %}" class="text-decoration-none">
+            <div class="card text-center p-3 h-100 dashboard-card">
+                <i class="bi bi-airplane-engines fs-1 text-warning mb-2"></i>
+                <h2 class="fw-bold mb-0">{{ nb_types_avions }}</h2>
+                <p class="text-muted mb-0">Type{{ nb_types_avions|pluralize }} d'avion{{ nb_types_avions|pluralize }}</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{% url 'avion_liste' %}" class="text-decoration-none">
+            <div class="card text-center p-3 h-100 dashboard-card">
+                <i class="bi bi-airplane-fill fs-1 text-success mb-2"></i>
+                <h2 class="fw-bold mb-0">{{ nb_avions }}</h2>
+                <p class="text-muted mb-0">Avion{{ nb_avions|pluralize }}</p>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-4">
+        <a href="{% url 'vol_liste' %}" class="text-decoration-none">
+            <div class="card text-center p-3 h-100 dashboard-card">
+                <i class="bi bi-calendar3 fs-1 text-danger mb-2"></i>
+                <h2 class="fw-bold mb-0">{{ nb_vols }}</h2>
+                <p class="text-muted mb-0">Vol{{ nb_vols|pluralize }}</p>
+            </div>
+        </a>
     </div>
 </div>
+
+<style>
+.dashboard-card {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+}
+.dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12) !important;
+}
+</style>
 {% endblock %}

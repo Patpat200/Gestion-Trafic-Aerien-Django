@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'trafic_aerien',
         'USER': 'django_user',
         'PASSWORD': 'toto',
-        'HOST': '192.168.1.80',
+        'HOST': '192.168.56.10',
         'PORT': '3306',
     }
 }

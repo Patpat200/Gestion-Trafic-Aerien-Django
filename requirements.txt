@@ -1,3 +1,5 @@
 django
 pymysql
 pillow
+gunicorn
+ 
