@@ -6,7 +6,7 @@ from .models import Aeroport, Piste, Compagnie, TypeAvion, Avion, Vol
 from .forms import AeroportForm, PisteForm, CompagnieForm, TypeAvionForm, AvionForm, VolForm
 from django.contrib import messages
 
-
+# TOUT LE MONE
 def index(request):
     context = {
         'nb_aeroports': Aeroport.objects.count(),
@@ -23,7 +23,7 @@ def index(request):
 
 
 
-# AÉROPORTS 
+# AÉROPORTS, Lucas
 def aeroport_liste(request):
     aeroports = Aeroport.objects.all()
     return render(request, 'TraficAerien/aeroport_liste.html', {'aeroports': aeroports})
@@ -358,7 +358,7 @@ def import_vols_csv(request):
 
 
 
-# COMPAGNIES 
+# COMPAGNIES, Lucas
 def compagnie_liste(request):
     compagnies = Compagnie.objects.all()
     return render(request, 'TraficAerien/compagnie_liste.html', {'compagnies': compagnies})
@@ -401,7 +401,7 @@ def compagnie_supprimer(request, pk):
 
 
 
-# TYPES D'AVIONS 
+# TYPES D'AVIONS, Lucas
 def typeavion_liste(request):
     types = TypeAvion.objects.all()
     return render(request, 'TraficAerien/typeavion_liste.html', {'types': types})
