@@ -439,5 +439,5 @@ code {
     font-weight: 600;
 }
 
-/* ─── CONFIRMATION SUPPRESSION ────────────────────── */
-.text-danger { color: var(--accent) !important; }
+/* ─── CONFIRMATION SUPPRESSION ────────────────────── */ 
+.text-danger { color: var(--accent) !important; } 
