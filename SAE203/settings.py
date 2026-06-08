@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-0b$bwzsa*tse_skpk94+nr1b-!)&&gkwz4f0oq9@w(i5c80j+x
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','192.168.1.86']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','10.128.207.234']
 
 
 # Application definition
@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'trafic_aerien',
         'USER': 'django_user',
         'PASSWORD': 'toto',
-        'HOST': '192.168.1.54',
+        'HOST': '10.128.207.234',
         'PORT': '3306',
     }
 }
