@@ -10,21 +10,17 @@ on:
 permissions:
   contents: write
 
-# Option magique pour forcer l'utilisation de Node 24 et faire taire l'avertissement
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Le robot clone ton code
+      # 1. Le robot clone ton code (Version 6 : native Node 24)
       - name: Checkout du code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      # 2. Il installe Python sur son mini-serveur
+      # 2. Il installe Python sur son mini-serveur (Version 6 : native Node 24)
       - name: Installation de Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.x
 
