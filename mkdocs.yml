@@ -1,0 +1,16 @@
+site_name: Documentation - SAÉ Trafic Aérien
+site_description: Déploiement et architecture du projet Django/Debian
+theme:
+  name: material
+  palette:
+    primary: blue
+    accent: light blue
+
+# On dit à MkDocs où se trouvent tes fichiers
+docs_dir: 'docs'
+
+nav:
+  - Accueil: index.md
+  - Guide de Déploiement: DEPLOIMENT.md
+  - Mémento Commandes: MEMENTO.md
+  - Lancement Local: LOCAL.md
