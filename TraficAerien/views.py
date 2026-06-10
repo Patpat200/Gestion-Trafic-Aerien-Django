@@ -6,7 +6,7 @@ from .models import Aeroport, Piste, Compagnie, TypeAvion, Avion, Vol
 from .forms import AeroportForm, PisteForm, CompagnieForm, TypeAvionForm, AvionForm, VolForm
 from django.contrib import messages
 
-# TOUT LE MONE
+# UNPEUX TOUT LE MONDE
 def index(request):
     context = {
         'nb_aeroports': Aeroport.objects.count(),
@@ -157,7 +157,7 @@ def vol_liste(request):
     vols = Vol.objects.all()
     return render(request, 'TraficAerien/vol_liste.html', {'vols': vols})
 
-
+# Algo des 10min
 def vol_creer(request):
     suggestion = None
     if request.method == 'POST':
@@ -180,15 +180,14 @@ def vol_creer(request):
                 messages.error(request, f"Aucune piste assez longue à l'aéroport {aeroport_arr}.")
                 return render(request, 'TraficAerien/vol_form.html', {'form': form, 'titre': 'Ajouter un vol'})
 
-            # On récupère tous les vols existants sur cet aéroport pour faire nos comparaisons
+            # On récupère tous les vols existants sur cet aéroport pour faire des comparaisons
             vols_existants = Vol.objects.filter(aeroport_arrivee=aeroport_arr)
             piste_libre = None
             
-            # verif si piste libre
+            # verif si libre
             for piste in pistes_compatibles:
                 occupee = False
                 for ancien_vol in vols_existants:
-                    # On ne compare que s'il y a une piste assignée
                     if ancien_vol.piste_arrivee == piste:
                         ecart = abs((ancien_vol.date_heure_arrivee - heure_arr).total_seconds())
                         if ecart < 600:  # Moins de 10 minutes d'écart
@@ -202,7 +201,7 @@ def vol_creer(request):
             # cherche prochain creneau
             if piste_libre is None:
                 heure_test = heure_arr
-                for i in range(1, 49):  # On teste jusqu'à 8 heures (48 créneaux de 10min)
+                for i in range(1, 49):
                     heure_test = heure_arr + timedelta(minutes=10 * i)
                     
                     for piste in pistes_compatibles:
@@ -218,7 +217,7 @@ def vol_creer(request):
                             break
                     
                     if piste_libre is not None:
-                        # On a trouvé un créneau, on propose la modification
+                        # On a trouvé un créneau, on propose la modif
                         suggestion = heure_test
                         messages.warning(request, f"Attention, toutes les pistes sont occupées à cette heure. Nouveau créneau disponible : {suggestion.strftime('%H:%M')}")
                         return render(request, 'TraficAerien/vol_form.html', {

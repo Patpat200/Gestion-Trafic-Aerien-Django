@@ -7,9 +7,9 @@ class Aeroport(models.Model):
         managed = False
         db_table = 'aeroport'
 
-    
     def __str__(self):
         return f"{self.nom} ({self.pays})"
+
 
 class Piste(models.Model):
     numero = models.CharField(max_length=10)
@@ -19,9 +19,9 @@ class Piste(models.Model):
         managed = False
         db_table = 'piste'
 
-    
     def __str__(self):
         return f"Piste {self.numero} - {self.aeroport.nom}"
+
 
 class Compagnie(models.Model):
     nom = models.CharField(max_length=100)
@@ -31,9 +31,9 @@ class Compagnie(models.Model):
         managed = False
         db_table = 'compagnie'
 
-    
     def __str__(self):
         return self.nom
+
 
 class TypeAvion(models.Model):
     marque = models.CharField(max_length=100)
@@ -45,7 +45,6 @@ class TypeAvion(models.Model):
         managed = False
         db_table = 'typeavion'
 
-    
     def __str__(self):
         return f"{self.marque} {self.modele}"
 
@@ -57,10 +56,10 @@ class Avion(models.Model):
     class Meta:
         managed = False
         db_table = 'avion'
-
     
     def __str__(self):
         return f"{self.nom} ({self.compagnie})"
+
 
 class Vol(models.Model):
     avion = models.ForeignKey(Avion, on_delete=models.CASCADE)
@@ -73,7 +72,6 @@ class Vol(models.Model):
     class Meta:
         managed = False
         db_table = 'vol'
-
     
     def __str__(self):
         return f"Vol {self.id} - {self.aeroport_depart} -> {self.aeroport_arrivee}"

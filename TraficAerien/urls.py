@@ -30,7 +30,6 @@ urlpatterns = [
     path('vols/import/', views.import_vols_csv, name='import_vols_csv'),
     path('vols/fiches/', views.fiche_vols, name='fiche_vols'),
 
-
     # Compagnies
     path('compagnies/', views.compagnie_liste, name='compagnie_liste'),
     path('compagnies/ajouter/', views.compagnie_creer, name='compagnie_creer'),

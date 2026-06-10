@@ -1,8 +1,3 @@
-/* ═══════════════════════════════════════════════════
-   INDUSTRIAL COLD — AirTraffic Manager
-   Palette : zinc/slate, acier, rouge signal
-═══════════════════════════════════════════════════ */
-
 :root {
     --bg-root:      #141618;
     --bg-panel:     #1a1d21;
@@ -31,7 +26,6 @@
     --red:      #c0392b;
 }
 
-/* ─── BASE ────────────────────────────────────────── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -42,7 +36,6 @@ body {
     min-height: 100vh;
 }
 
-/* ─── NAVBAR ──────────────────────────────────────── */
 .navbar {
     background-color: var(--bg-panel);
     border-bottom: 2px solid var(--accent);
@@ -63,7 +56,6 @@ body {
     margin-right: 8px;
 }
 
-/* ─── SIDEBAR ─────────────────────────────────────── */
 .sidebar {
     min-height: calc(100vh - 56px);
     background-color: var(--bg-panel);
@@ -145,7 +137,6 @@ body {
     color: var(--accent);
 }
 
-/* ─── CONTENU PRINCIPAL ───────────────────────────── */
 .col-md-10.main-content {
     flex: 1 1 0% !important;
     max-width: calc(100% - 220px) !important;
@@ -158,7 +149,6 @@ body {
     background-color: var(--bg-root);
 }
 
-/* ─── TITRES DE PAGE ──────────────────────────────── */
 h2, h3 {
     color: var(--text-1);
     font-weight: 600;
@@ -170,7 +160,6 @@ h3 i {
     margin-right: 6px;
 }
 
-/* ─── CARDS ───────────────────────────────────────── */
 .card {
     background-color: var(--bg-raised) !important;
     border: 1px solid var(--line) !important;
@@ -191,7 +180,6 @@ h3 i {
     border-radius: 4px 4px 0 0 !important;
 }
 
-/* ─── TABLES ──────────────────────────────────────── */
 .table {
     color: var(--text-1);
     font-size: 0.855rem;
@@ -236,7 +224,6 @@ h3 i {
     color: var(--steel-light);
 }
 
-/* ─── BOUTONS ─────────────────────────────────────── */
 .btn {
     font-size: 0.8rem;
     font-weight: 600;
@@ -306,7 +293,6 @@ h3 i {
     color: #5ab893;
 }
 
-/* ─── FORMULAIRES ─────────────────────────────────── */
 .form-control,
 .form-select {
     background-color: var(--bg-panel);
@@ -344,7 +330,6 @@ h3 i {
     margin-bottom: 0.35rem;
 }
 
-/* ─── ALERTS ──────────────────────────────────────── */
 .alert {
     border-radius: 3px;
     font-size: 0.855rem;
@@ -380,7 +365,6 @@ h3 i {
     color: #e06050;
 }
 
-/* ─── BADGES ──────────────────────────────────────── */
 .badge.bg-secondary {
     background-color: var(--bg-active) !important;
     color: var(--text-2);
@@ -391,7 +375,6 @@ h3 i {
     border-radius: 2px;
 }
 
-/* ─── TEXTES DIVERS ───────────────────────────────── */
 .text-muted { color: var(--text-3) !important; }
 small.text-muted { color: var(--text-2) !important; }
 
@@ -408,7 +391,6 @@ code {
     font-size: 0.83em;
 }
 
-/* ─── DASHBOARD CARDS ─────────────────────────────── */
 .dashboard-card {
     transition: border-color 0.12s, background-color 0.12s;
     cursor: pointer;
@@ -439,5 +421,4 @@ code {
     font-weight: 600;
 }
 
-/* ─── CONFIRMATION SUPPRESSION ────────────────────── */ 
-.text-danger { color: var(--accent) !important; } 
+.text-danger { color: var(--accent) !important; }
