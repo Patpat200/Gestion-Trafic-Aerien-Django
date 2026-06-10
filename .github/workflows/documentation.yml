@@ -1,12 +1,12 @@
 name: Deploiement MkDocs
 
-# Le script se lance à chaque fois que tu fais un git push sur la branche main
+# Le script se lance à chaque fois que tu fais un push sur la branche main
 on:
   push:
     branches:
       - main
 
-# On autorise le script à écrire sur le dépôt (pour créer la page web)
+# Autorisations nécessaires pour que le robot puisse créer et publier la page web
 permissions:
   contents: write
 
@@ -14,19 +14,20 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Le robot clone ton code
-      - uses: actions/checkout@v3
+      # 1. Le robot clone ton code (Version 4 pour éviter l'erreur Node.js)
+      - name: Checkout du code
+        uses: actions/checkout@v4
 
-      # 2. Il installe Python sur son mini-serveur
+      # 2. Il installe Python sur son mini-serveur (Version 5 pour éviter l'erreur Node.js)
       - name: Installation de Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: 3.x
 
-      # 3. Il installe l'outil MkDocs et le beau thème Material
+      # 3. Il installe l'outil MkDocs et le thème Material
       - name: Installation des dépendances MkDocs
         run: pip install mkdocs-material
 
-      # 4. Il génère le site et le met en ligne sur GitHub Pages !
+      # 4. Il génère le site et le met en ligne sur GitHub Pages
       - name: Déploiement du site
         run: mkdocs gh-deploy --force
