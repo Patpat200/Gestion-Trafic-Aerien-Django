@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'trafic_aerien',
         'USER': 'django_user',
         'PASSWORD': 'toto',
-        'HOST': '10.128.207.234',
+        'HOST': '161.35.215.146', # Ip du VPS
         'PORT': '3306',
     }
 }
